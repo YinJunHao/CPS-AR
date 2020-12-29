@@ -16,7 +16,10 @@ public class loadjob : MonoBehaviour
         JobDetails.sentence = details.sentence;
         JobDetails.var = details.var;
         JobDetails.video = details.video;
-        // SceneManager.LoadScene("Job");
+        Debug.Log(JobDetails.sentence);
+        Debug.Log(JobDetails.var);
+        Debug.Log(JobDetails.video);
+        SceneManager.LoadScene("Job");
     } 
 
     public static class JobDetails
