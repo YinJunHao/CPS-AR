@@ -7,9 +7,12 @@ using System;
 
 public class refresh : MonoBehaviour
 {
+    public GameObject ButtonPanel;
+    public GameObject JobButton;
     public void GetJobList()
     {
-        string user_id = login.Global.user_id;
+        //string user_id = login.Global.user_id;
+        string user_id = "test";
         StartCoroutine(JobRequest("http://localhost:5000/ar/get_job/", user_id));
     }
 
@@ -29,19 +32,25 @@ public class refresh : MonoBehaviour
             Debug.Log("Received: " + uwr.downloadHandler.text);
         }
 
-        JobsList JobList = JsonUtility.FromJson<JobsList>(uwr.downloadHandler.text);
-        Debug.Log(JobList[0]);
-        foreach (Job jobs in JobList.Job)
+        JobsList JobList = new JobsList();
+        JobList = JsonUtility.FromJson<JobsList>(uwr.downloadHandler.text);
+        foreach (Job job in JobList.jobs)
         {
-            print(jobs.sentence);
+            GameObject newButton = Instantiate(JobButton) as GameObject;
+            Transform ButtonText = newButton.transform.Find("Text");
+            ButtonText.GetComponent<Text>().text = job.sentence;
+            jobdetails JobDetails = newButton.GetComponent<jobdetails>();
+            JobDetails.sentence = job.sentence;
+            JobDetails.var = job.var;
+            JobDetails.video = job.video;
+            int LastChildIndex = ButtonPanel.transform.childCount - 1;
+            int y = 300 * LastChildIndex;
+            newButton.transform.position = new Vector3(0, y, 0);
+            newButton.transform.SetParent(ButtonPanel.transform, false);
         }
+        
     }
 
-    [Serializable]
-    public class JobsList
-    {
-        public List<Job> Job = new List<Job>();
-    }
     [Serializable]
     public class Job
     {
@@ -49,6 +58,12 @@ public class refresh : MonoBehaviour
         public string var;
         public string video;
     }
+    [Serializable]
+    public class JobsList
+    {
+        public Job[] jobs;
+    }
+   
 }
 
 
